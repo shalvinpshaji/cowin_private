@@ -1,4 +1,7 @@
 import requests
+from datetime import date, timedelta
+
+
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36'}
 def get_states():
     req = requests.get('https://cdn-api.co-vin.in/api/v2/admin/location/states', headers=headers)
@@ -18,3 +21,19 @@ def get_districts(state_id):
     districts = {district for district in district_abbr}
     return {'districts':districts,'district_lookup':district_lookup,'id_lookup': id_lookup, 'district_abbr':district_abbr}
 
+def get_appointment(district_id, age):
+    today = date.today()
+    dates = [(today + timedelta(days=i)) for i in range(4)]
+    dates = [d.strftime("%d-%m-%y") for d in dates]
+    for d in dates:
+        req = f'https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByDistrict?district_id={district_id}&date={d}'
+        r = requests.get(req, headers=headers)
+        sess = r.json()['sessions']
+        ret = []
+        for s in sess:
+            name = s['name']
+            cap = s['available_capacity']
+            min_age_limit = s['min_age_limit']
+            if cap > 0 and age >= int(min_age_limit):
+               ret.append(f'{name} - Available dose-{cap} on {d}')
+    return ret
