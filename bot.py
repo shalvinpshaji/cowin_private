@@ -63,7 +63,7 @@ async def info(ctx, username):
     k = f'Username : {u.username} \nAge : {u.age} \nState : {u.state} \nDistrict : {u.district}'
     await ctx.send(k)
 
-client.command(name='delete', help='Delete the user')
+@client.command(name='delete', help='Delete the user')
 async def delete(ctx, username):
     if username not in users:
         await ctx.send(f'No user with name {username}')
