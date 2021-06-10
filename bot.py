@@ -41,7 +41,7 @@ async def reg(ctx, username: str,age, *address):
             if not ret1:
                 k = ''
                 for i in districts:
-                    k = i +k+ '\n'
+                    k = k + i + '\n'
                 await ctx.send(f'District not found \nSuggestions : \n {k}')
                 return
             else:
@@ -71,7 +71,7 @@ async def delete(ctx, username):
     del users[username]
     await ctx.send(f'Username {username} is deleted')
 
-@tasks.loop(minutes=1)
+@tasks.loop(hours=2)
 async def check_avail():
     for user in users:
         channel = client.get_channel(764056683294097420)
